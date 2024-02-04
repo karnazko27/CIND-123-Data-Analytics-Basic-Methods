@@ -1,0 +1,212 @@
+---
+title: "CIND 123 - Data Analytics: Basic Methods"
+author: "Karnaz Obaidullah"
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
+html_document: default
+---
+<center> <h1> Assignment 1 (10%) </h1> </center>
+<center>  <h3> Karnaz Obaidullah </h2> </center>
+<center> <h3> CIND123 Section DHD 501000900 </h2> </center>
+
+<style>
+body {
+    position: absolute;
+    left: 0px;}
+</style>
+---
+# Instructions 
+
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. Review this website for more details on using R Markdown <http://rmarkdown.rstudio.com>.
+
+Use RStudio for this assignment. Complete the assignment by inserting your  \texttt{R} code wherever you see the string "#INSERT YOUR ANSWER HERE".
+
+When you click the **Knit** button, a document (PDF, Word, or HTML format) will be generated that includes both the assignment content as well as the output of any embedded R code chunks.
+
+**NOTE**: YOU SHOULD NEVER HAVE `install.packages` IN YOUR CODE; OTHERWISE, THE `Knit` OPTION WILL GIVE AN ERROR. COMMENT OUT ALL PACKAGE INSTALLATIONS.
+
+Submit **both**  the `rmd` and generated `output` files. Failing to submit both files will be subject to mark deduction. PDF or HTML is preferred. 
+
+## Sample Question and Solution
+
+Use `seq()` to create the vector $(3,5\ldots,29)$.
+
+```{r}
+seq(3, 30, 2)
+seq(3, 29, 2)
+```
+
+## Question 1 (32 points)
+
+## Q1a (8 points)
+Create and print a vector `x` with all integers from 15 to 100 and a vector `y` containing multiples of 5 in the same range. Hint: use `seq()`function. Calculate the difference in lengths of the vectors `x` and `y`. 
+Hint: use length()
+
+```{r}
+x <- seq(15, 100)
+y <- seq(15, 100, 5)
+length(x) - length(y)
+```
+
+## Q1b (8 points)
+Create a new vector, `x_square`, with the square of elements at indices 1, 11, 21, 31, 41, 51, 61, and 71 from the variable `x`. Hint: Use indexing rather than a `for` loop. Calculate the mean and median of the FIRST five values from `x_square`.
+```{r}
+x_square <- c(x[1],x[11], x[21], x[31], x[41], x[51], x[61], x[71])^2
+mean(x_square[1:5])
+median(x_square[1:5])
+```
+
+## Q1c (8 points)
+For a given factor variable of `factorVar <- factor(c(10.8, 2.7, 5.0, 3.5))`. To convert the factor to number, you need to either:
+1) use `level()` to extract the level labels, then use `as.numeric()` to convert the labels to numbers, or
+2) use `as.charactor()` to convert the values in the factorVar, then use `as.numeric()` to convert the values to numbers
+
+Please provide both solutions
+
+```{r}
+factorVar <- factor(c(10.8, 2.7, 5.0, 3.5))
+
+as.numeric(levels(factorVar))
+as.numeric(as.character(factorVar))
+```
+
+## Q1d (8 points)
+A comma-separated values file `dataset.csv` consists of missing values represented by Not A Number (`null`) and question mark (`?`). How can you read this type of files in R? 
+NOTE: Please make sure you have saved the `dataset.csv` file at your current working directory.
+```{r}
+
+read.csv("dataset.csv", na.strings=c("?", "null"))
+```
+
+# Question 2 (32 points)
+
+## Q2a (8 points)
+Compute: $$\frac{1}{4!} \sum_{n=10}^{40}3^{n}$$
+Hint: Use `factorial(n)` to compute $n!$.
+```{r}
+
+sample_func <- function(n){
+    3 ^ n
+}
+n_max <- 40
+n_min <- 10
+
+sequence_of_n <- c(n_min: n_max)
+
+(1/factorial(4)) * sum(sample_func(sequence_of_n))
+```
+
+## Q2b (8 points)
+Compute: $$\prod_{n=1}^{20} \left( 3n + \frac{1}{n} \right)$$
+NOTE: The symbol $\Pi$ represents multiplication.
+```{r}
+
+result <- 1
+
+for (n in 1:20){
+  y <- 3*n + 1/n
+  
+  result <- result * y
+}
+
+result
+```
+
+## Q2c (8 points)
+Describe what the following R command does:
+`c(0:5)[NA]`
+```{r}
+
+c(0:5)[NA]
+
+```
+Answer: It creates a vector or NAs of length 5
+
+## Q2d (8 points)
+Describe the purpose of `is.vector()`, `is.character()`, `is.numeric()`, and `is.na()` functions? Please use `x <- c("a","b",NA,2)` to explain your description.
+```{r}
+x <- c("a","b",NA,2)
+
+is.vector(x)
+
+is.character(x)
+
+is.numeric(x)
+
+is.na(x)
+```
+is.vector() determines whether object is vector
+is.character() determines whether object is of character data type
+is.numeric() determines whether object is of numeric data type
+is.na() determines whether object has null values
+
+# Question 3 (36 points)
+The `airquality` dataset contains daily air quality measurements in New York from May to September 1973. The variables include Ozone level, Solar radiation, wind speed, temperature in Fahrenheit, month, and day. Please see the detailed description using `help("airquality")`.
+```{r}
+help("airquality")
+```
+
+Install the `airquality` data set on your computer using the command `install.packages("datasets")`. Then load the `datasets` package into your session.
+```{r}
+#library(datasets)
+```
+
+## Q3a (4 points)
+Display the first 6 rows of the `airquality` data set.
+```{r}
+head(airquality)
+```
+
+## Q3b (8 points)
+Compute the average of the first four variables (Ozone, Solar.R, Wind and Temp) for the fifth month using the `sapply()` function.
+Hint: You might need to consider removing the `NA` values; otherwise, the average will not be computed. 
+```{r}
+filtered <- na.omit(airquality[airquality$Month == 5, ])
+
+average <- sapply(filtered[, 1:4], mean)
+
+average
+```
+
+## Q3c (8 points)
+Construct a boxplot for the all `Wind`  and `Temp` variables, then display the values of all the outliers which lie beyond the whiskers.
+```{r}
+
+boxplot(airquality$Wind, airquality$Temp, names = c("Wind", "Temp"))
+
+outliers <- boxplot(airquality$Wind, airquality$Temp, plot = FALSE)$out
+
+identify(outliers, labels = outliers)
+```
+
+## Q3d (8 points)
+Compute the upper quartile of the `Wind` variable with two different methods.
+HINT: Only show the upper quartile using indexing. For the type of quartile, please see https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/quantile.
+```{r}
+# Method 1
+upper_quartile1 <- quantile(airquality$Wind, probs = 0.75)
+upper_quartile1
+
+# Method 2
+sort_wind <- sort(airquality$Wind)
+n <- length(sort_wind)
+index <- ceiling(0.75 * n)
+upper_quartile2 <- sort_wind[index]
+upper_quartile2
+```
+
+## Q3e (8 points)
+Construct a pie chart to describe the number of entries by `Month`.
+HINT: use the `table()` function to count and tabulate the number of entries within a `Month`.
+```{r}
+
+entries_per_month <- table(airquality$Month)
+
+pie(entries_per_month, labels = names(entries_per_month), main="Number of Entries Per Month")
+```
+
+
+END of Assignment #1.
