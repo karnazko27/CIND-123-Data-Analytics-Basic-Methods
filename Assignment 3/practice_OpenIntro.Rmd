@@ -1,0 +1,20 @@
+---
+title: "OpenIntro_data_analysis"
+output: html_document
+date: "2023-07-29"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Open Intro
+
+### Loading and Preprocessing
+
+```{r}
+OpenIntro = read.csv("https://www.openintro.org/data/csv/loans_full_schema.csv")
+
+head(OpenIntro)
+```
+

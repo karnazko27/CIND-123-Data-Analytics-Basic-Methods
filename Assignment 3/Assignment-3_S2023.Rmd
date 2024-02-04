@@ -1,0 +1,358 @@
+---
+title: "CIND 123: Data Analytics Basic Methods: Assignment-3"
+author: "Karnaz Obaidullah"
+output: html_document
+---
+<center> <h1> Assignment 3 (10%) </h1> </center>
+<center> <h2> Total 100 Marks </h2> </center>
+<center> <h3> Karnaz Obaidullah  </h3> </center>
+<center> <h3> CIND123 Section DHD 501000900 </h3> </center>
+---
+
+
+# Instructions 
+
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. Review this website for more details on using R Markdown <http://rmarkdown.rstudio.com>.
+
+Use RStudio for this assignment. Complete the assignment by inserting your  \texttt{R} code wherever you see the string "#INSERT YOUR ANSWER HERE".
+
+When you click the **Knit** button, a document (PDF, Word, or HTML format) will be generated that includes both the assignment content as well as the output of any embedded R code chunks.
+
+**NOTE**: YOU SHOULD NEVER HAVE `install.packages` IN YOUR CODE; OTHERWISE, THE `Knit` OPTION WILL GIVE AN ERROR. COMMENT OUT ALL PACKAGE INSTALLATIONS.
+
+Submit **both**  the `rmd` and generated `output` files. Failing to submit both files will be subject to mark deduction. PDF or HTML is preferred. 
+
+## Sample Question and Solution
+
+Use `seq()` to create the vector $(3, 5, \dots, 29)$.
+
+```{r}
+seq(3, 30, 2)
+seq(3, 29, 2)
+```
+
+
+
+# Question 1 [30 Pts]
+
+## Q1a (10 points) 
+
+Suppose you have a dataset with two variables, age (c(41, 56, 45, 65, 25, 70, 30, 33, 60, 35)) and income (c(93000, 110000, 80000, 125000, 40000, 145000, 78000, 51000, 110000, 69000)), for a sample of 10 individuals. The `age` variable represents the age of the individual, while the `income` variable represents their annual income. Set variables age and income respectively. Then find the least-squares line relating the `age` to the `income`. 
+
+Does the assumption of a linear relationship appear to be reasonable in this case? Give reasons for your answer as a comment.
+
+```{r}
+age <- c(41, 56, 45, 65, 25, 70, 30, 33, 60, 35)
+income <- c(93000, 110000, 80000, 125000, 40000, 145000, 78000, 51000, 110000, 69000)
+
+lm(income ~ age)
+summary(lm(income ~ age))
+```
+
+```{r}
+lm.income_age <- lm(income ~ age)
+fitted(lm.income_age)
+```
+
+
+```{r}
+#INSERT YOUR ANSWER HERE
+# The assumptions of linear regression are satisfied as follows: 
+# Linearity: The assumption of a linear relationship is reasonable since the variables appear to have linearity. The p-value above indicates that the age variable is quite significant in explaining the income variable. 
+# Independence: The observations are also independent of each other.
+# Homoskedasticity: Residuals do not vary greatly as shown in the plot below so this assumption is met.
+# Normality: As we see in the histogram below the residuals do not appear to be normally distributed. 
+# Since this is a simple linear regression we do not test for multicollinearity of dependent variables.
+# Conclusion: not all of the assumptions of linear regression are met.
+```
+
+```{r}
+plot(fitted(lm.income_age), residuals(lm.income_age))
+
+abline(h = 0, lty = 2)
+```
+
+
+```{r}
+hist(residuals(lm.income_age))
+```
+
+
+## Q1b (10 points) 
+Plot the income as a function of age using a scatterplot and draw the least-square line on the same plot. 
+```{r}
+#INSERT YOUR ANSWER HERE
+# least-squares line plot
+plot(age, income) + abline(lm(income ~ age))
+```
+
+## Q1c (10 points) 
+Use the regression line to predict the income when the age is 38. 
+```{r}
+#INSERT YOUR ANSWER HERE
+newdata <- data.frame(age=38)
+  
+model <- lm(income ~ age)
+
+predict(model, newdata = newdata)
+```
+
+
+
+# Question 2 [45 Pts]
+
+Please load the OpenIntro Statistics Dataset - loans_full_schema data by running the following chunk of code.
+
+You can read more about at this link:
+   - https://r-data.pmagunia.com/dataset/openintro-statistics-dataset-loansfullschema
+   - https://www.openintro.org/data/index.php?data=loans_full_schema
+```{r load_data}
+OpenIntro = read.csv("https://www.openintro.org/data/csv/loans_full_schema.csv")
+```
+
+## Q2a (5 points) 
+Display the first 5 rows of the `OpenIntro` data, the names of all the variables, and a descriptive summary of each variable. 
+```{r}
+#INSERT YOUR ANSWER HERE
+# first 5 rows
+head(OpenIntro)
+```
+
+```{r}
+# names of all variables
+names(OpenIntro)
+```
+
+```{r}
+# descriptive summary of each variable
+summary(OpenIntro)
+```
+
+
+## Q2b (5 points) 
+Calculate the mean, variance and standard deviation of the interest rate of the loans (`interest_rate`) by omitting the missing values, if any. 
+```{r}
+#INSERT YOUR ANSWER HERE
+# mean of interest rate of loans
+mean(OpenIntro$interest_rate, na.rm = T)
+```
+
+```{r}
+# variance of interest rate of loans
+var(OpenIntro$interest_rate, na.rm = T)
+```
+
+```{r}
+# standard deviation of interest rate of loans
+sd(OpenIntro$interest_rate, na.rm = T)
+```
+
+## Q2c-1 (5 points) 
+Use annual income (`annual_income`), the length of the loan (`term`), interest rate (`interest_rate`), and loan ammount (`loan_amount`) to build a linear regression model to predict Monthly payment for the loan the applicant received. (`installment`).  
+
+## Q2c-2 (5 points) 
+How can you draw a conclusion from the results? 
+   (Note: Full marks requires comment on the predictors)
+```{r}
+#INSERT YOUR ANSWER HERE
+# Q2c-1
+multiple_model <- lm(installment ~ annual_income + term + interest_rate + loan_amount, data = OpenIntro)
+
+summary(multiple_model)
+
+#install.packages("car")
+library(car)
+avPlots(multiple_model)
+
+#Q2c-2
+
+# The p-value for each of the predictors apart from annual_income are quite low so that means that they are statistically significant enough to explain the variation in the installment variable.  
+# The model fit is 97.52% so the model fits the data really well.
+
+
+```
+
+## Q2d (5 points) 
+
+Based on the output of your model, write an equation using the intercept and coefficients of `loan_amount`, `term`, `interest_rate`, and `annual_income`. Then, use the equation for a case with `loan_amount` of 24000, `term` of 36, `interest_rate` of 6.72, and `annual_income` of 90000 to predict their `installment`.  You are not allowed to use `predict` function for this task.
+
+```{r}
+#INSERT YOUR ANSWER HERE
+intercept <- coef(summary(multiple_model))['(Intercept)', 
+                                            'Estimate']
+coef_loan_amount <- coef(summary(multiple_model))['loan_amount', 'Estimate']
+
+coef_term <- coef(summary(multiple_model))['term', 'Estimate']
+
+coef_interest_rate <- coef(summary(multiple_model))['interest_rate', 'Estimate']
+
+coef_annual_income <- coef(summary(multiple_model))['annual_income', 'Estimate']
+
+print(intercept)
+print(coef_loan_amount)
+print(coef_term)
+print(coef_interest_rate) 
+print(coef_annual_income)
+
+# Equation for installment
+value_loan_amount = 24000
+value_term = 36
+value_interest_rate = 6.72 
+value_annual_income = 90000
+
+equation_installment <- intercept + value_loan_amount*coef_loan_amount + value_term*coef_term + value_interest_rate*coef_interest_rate + value_annual_income*coef_annual_income
+
+equation_installment <- 252.9133 + 0.03029538*value_loan_amount -8.836271*value_term + 8.798582*value_interest_rate + 7.823704e-06*value_annual_income
+
+print(equation_installment)
+
+# installment is 721.7273.
+```
+
+
+## Q2e-1 (5 points) 
+Find Pearson correlation between the loan amount (`loan_amount`) and the interest rate (`interest_rate`); and between loan amount (`loan_amount`) and installment (`installment`). 
+
+## Q2e-2 (5 points) 
+What conclusions can you draw? Write your reasons as comments.
+```{r}
+#INSERT YOUR ANSWER HERE
+#Q2e-1
+cor_loan_interest <- cor(OpenIntro$loan_amount, OpenIntro$interest_rate, method="pearson")
+cor_loan_installment <- cor(OpenIntro$loan_amount, OpenIntro$installment, method = "pearson")
+
+print(cor_loan_interest)
+print(cor_loan_installment)
+
+#Q2e-2
+# Correlation between loan amount and interest rate was quite low at 0.06. It suggests that there is little to no linear relationship between loan amount and installment. Correlation between loan amount and installment is very high at 0.94. It indicates a strong positive linear relationship between loan amount and installment. As loan amounts increase, the installment amounts also tend to increase.
+```
+
+## Q2f-1 (5 points) 
+Display the correlation matrix of the following variables: 
+- installment (`installment`), 
+- loan amount (`loan_amount`),
+- salary (`annual_income`),
+- term (`term`),
+- total credit limit (`total_credit_limit`). 
+
+## Q2f-2 (5 points) 
+Write what conclusion you can draw, as comments. 
+   (answer not included, Please grade on student's comments)
+```{r}
+#INSERT YOUR ANSWER HERE
+# Q2f-1
+new_df = (data.frame(OpenIntro$installment, OpenIntro$loan_amount,
+                     OpenIntro$annual_income, OpenIntro$term,
+                     OpenIntro$total_credit_limit))
+
+# calculate correlaion matrix
+cor_matrix = cor(new_df)
+print(cor_matrix)
+
+# Q2f-2
+
+# All the variables are positively correlated. 'installment` is correlated the strongest to 'loan_amount' and the weakest to 'term'. 'loan_amount' is strongly correlated with 'installment' and weakest with 'total_credit_limit'. 'annual_income' is the most correlated with 'total_credit_limit' even if it is not strongly correlated. It is the weakest with 'term'. 'term' is most correlated with 'loan_amount' even though it is not a strong correlation. And the weakest correlation is with 'annual_income'. 'total_credit_limit' is strongest with 'annual_income' but weakest with 'term'
+# Some of the high correlations might indicate multicollinearity. 
+
+```
+
+
+
+## Question 3 [15 Pts]
+
+This question makes use of package "ISwR". Please load `airquality` dataset as following:
+
+```{r}
+# or install.packages("ISwR")
+library(ISwR) 
+data(airquality)
+str(airquality)
+```
+
+
+## Q3a (7.5 points) 
+Use a histogram to assess the normality of the `Temp` variable, then explain why it appears (to some extent) normally distributed. 
+```{r}
+#INSERT YOUR ANSWER HERE
+hist(airquality$Temp, main = "Histogram for Temp variable",
+      xlab = "Temp")
+
+mean(airquality$Temp, na.rm = T)
+median(airquality$Temp, na.rm = T)
+sd(airquality$Temp, na.rm = T)
+summary(airquality$Temp, na.rm = T)
+
+# It is slightly skewed to the left. The mean and median are almost the same. The shape of the curve is also kind of symmetric. This distribution satisfies the normal distribution condition of the empirical rule which states that 99.7% of the data must be within 3 standard deviations, 95% of the data must be within 2 standard deviations, and 68% must be within 1 standard deviation from the mean. 
+```
+
+## Q3b (7.5 points) 
+Create a comparison boxplot that shows the distribution of `Wind` in each month. Use different colours for each month. 
+
+```{r}
+names(airquality)
+```
+
+
+```{r}
+#INSERT YOUR ANSWER HERE
+library("ggplot2")
+group_month = factor(airquality$Month)
+
+ggplot(airquality, aes(x=group_month, y=Wind, fill = group_month)) + geom_boxplot() + theme_classic() + labs(title="Distribution of Wind in Each Month", x="Month",y="Wind") + scale_fill_discrete(name = "Month")
+
+```
+
+# Q4 [10 points] 
+Create a vector x containing 1000 random integers between 1 and 10. Write a script in `R` that uses a `for` loop to count how many of these integers are even, odd, and multiples of 4. Your script should output a message for each category, stating how many integers were found and what percentage of the total this represents. For example, your output might look something like this:
+
+Even numbers: 488 (48.8% of total)
+Odd numbers: 512 (51.2% of total)
+Multiples of 4: 258 (25.8% of total)
+
+You should use set.seed in the beginning with your student ID. For instance, if your student ID is 500854237, you should write down `set.seed(500854237)` in the first line, and then write the rest of the code. 
+
+* hint: Only `for` loop with `if-else` conditions are accepted.
+
+```{r}
+#INSERT YOUR ANSWER HERE
+set.seed(501000900)
+
+# Generate a vector of 1000 random integers between 1 and 10
+random_numbers_sample <- sample(1:10, 1000, replace = TRUE)
+
+even_count <- 0
+odd_count <- 0
+multiple_of_4_count <- 0
+
+# Loop through each element and count the occurrences
+for (num in random_numbers_sample) {
+  # Check if the number is even
+  if (num %% 2 == 0) { 
+    even_count <- even_count + 1
+  } else { 
+    # Number is odd
+    odd_count <- odd_count + 1
+  }
+  
+  if (num %% 4 == 0) { 
+    # Check if the number is a multiple of 4
+    multiple_of_4_count <- multiple_of_4_count + 1
+  }
+}
+
+# Calculate percentages
+total_integers <- length(random_numbers_sample)
+even_percentage <- (even_count / total_integers) * 100
+odd_percentage <- (odd_count / total_integers) * 100
+multiple_of_4_percentage <- (multiple_of_4_count / total_integers) * 100
+
+# Print output
+cat("Even numbers:", even_count, "(", even_percentage, "% of total)\n")
+cat("Odd numbers:", odd_count, "(", odd_percentage, "% of total)\n")
+cat("Multiples of 4:", multiple_of_4_count, "(", multiple_of_4_percentage, "% of total)\n")
+```
+
+
+** End of Assignment **
